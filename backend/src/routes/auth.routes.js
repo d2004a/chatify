@@ -9,10 +9,11 @@ const router = express.Router();
 //     res.send("test endpoint");             for testing arcjet only
 // })
 // arcjet is a rate limiting provider 
-router.use(arcjetProtection) // Apply Arcjet protection to all routes in this router anly when this allows only the next api hits
+
+//router.use(arcjetProtection) // Apply Arcjet protection to all routes in this router anly when this allows only the next api hits
 router.post("/signup",signup);
 
-router.post("/login",arcjetProtection,login);
+router.post("/login",login);
 
 router.post("/logout",logout);
 router.put("/update-profile",protectRoute, updateProfile);

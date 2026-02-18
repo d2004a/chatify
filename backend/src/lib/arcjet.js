@@ -12,7 +12,7 @@ const aj = arcjet({
     detectBot({
       mode: "LIVE", // Blocks requests. Use "DRY_RUN" to log only
       // Block all bots except the following
-      allow: [
+      allow: ["PostmanRuntime",
         "CATEGORY:SEARCH_ENGINE", // Google, Bing, etc
         // Uncomment to allow these other common bot categories
         // See the full list at https://arcjet.com/bot-list
