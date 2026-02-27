@@ -5,6 +5,7 @@ import messageRoutes from "./routes/message.route.js"
 import { connectDB } from "./lib/db.js";
 import { ENV } from "./lib/env.js";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 // import path from "path";
 
 
@@ -16,6 +17,10 @@ const PORT = ENV.PORT || 3000;
 
 app.use(express.json()) //req.body
 app.use(cookieParser())
+
+app.use(cors({origin:ENV.CLIENT_URL, credentials:true}))
+
+
 app.use("/api/auth",authRoutes)
 app.use("/api/messages",messageRoutes)
 
