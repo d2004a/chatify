@@ -6,11 +6,12 @@ import { connectDB } from "./lib/db.js";
 import { ENV } from "./lib/env.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import { app, server } from "./lib/socket.js";
 // import path from "path";
 
 
 
-const app = express();
+
 // const __dirname =path.resolve(); // give me the path of my root folder
 
 const PORT = ENV.PORT || 3000;
@@ -36,7 +37,7 @@ app.use("/api/messages",messageRoutes)
 // }
 
 
-app.listen(PORT, ()=>{
+server.listen(PORT, ()=>{
     console.log("server is running on port " + PORT);
     connectDB()
 })
