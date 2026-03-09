@@ -53,7 +53,7 @@ function ChatConatiner() {
 
               </div>
             ))}
-            <div ref={messageEndRef}/> // scroll to this div when new message comes
+            <div ref={messageEndRef}/> {}
           </div>
         ) : isMessagesLoading ? <MessagesLoadingSkeleton/> : (
           <NoChatHistoryPlaceholder name={selectedUser.fullName} />
