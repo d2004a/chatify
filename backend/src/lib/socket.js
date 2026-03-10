@@ -10,10 +10,11 @@ const io = new Server(server, {
   cors: {
     origin: [
       "http://localhost:5173",
-      "https://chatify-eta-two.vercel.app"
+      ENV.CLIENT_URL
     ],
     credentials: true
-  }
+  },
+  transports: ['websocket', 'polling']
 });
 
 //apply authentication middleware to all socket connections
