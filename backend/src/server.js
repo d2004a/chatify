@@ -19,7 +19,15 @@ const PORT = ENV.PORT || 3000;
 app.use(express.json({limit : "5mb"})) //req.body
 app.use(cookieParser())
 
-app.use(cors({origin:ENV.CLIENT_URL, credentials:true}))
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://chatify-eta-two.vercel.app",
+    ],
+    credentials: true,
+  })
+);
 
 
 app.use("/api/auth",authRoutes)

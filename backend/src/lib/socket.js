@@ -7,11 +7,14 @@ import { socketAuthMiddleware } from '../middleware/socket.auth.middleware.js';
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
-    cors :{
-        origin :[ENV.CLIENT_URL],
-        credentials : true
-    },
-} );
+  cors: {
+    origin: [
+      "http://localhost:5173",
+      "https://chatify-eta-two.vercel.app"
+    ],
+    credentials: true
+  }
+});
 
 //apply authentication middleware to all socket connections
 
