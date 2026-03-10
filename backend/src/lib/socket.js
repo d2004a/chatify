@@ -12,6 +12,7 @@ const io = new Server(server, {
       "http://localhost:5173",
       ENV.CLIENT_URL
     ],
+    methods: ["GET", "POST"],
     credentials: true
   },
   transports: ['websocket', 'polling']

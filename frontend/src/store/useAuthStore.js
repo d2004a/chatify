@@ -26,7 +26,7 @@ export const useAuthStore = create((set, get) => ({
             set({ authUser: res.data })
             get().connectSocket()
         } catch (error) {
-            console.log("Error in auth check",)
+            console.log("Error in auth check")
             set({ authUser: null })
         } finally {
             set({ isCheckingAuth: false })
@@ -91,7 +91,7 @@ export const useAuthStore = create((set, get) => ({
         const { authUser } = get();
         if (!authUser || get().socket?.connected) return;
 
-        const socket = io(BASE_URL, { withCredentials: true })
+        const socket = io(BASE_URL, { withCredentials: true, transports: ['websocket'] });
 
         socket.connect();
 
