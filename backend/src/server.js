@@ -23,7 +23,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://chatify-eta-two.vercel.app",
+      ENV.CLIENT_URL,
     ],
     credentials: true,
   })
