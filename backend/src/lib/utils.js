@@ -1,12 +1,13 @@
 import jwt from "jsonwebtoken";
 import { ENV } from "./env.js";
 
-// Shared cookie options — must be identical when setting AND clearing the cookie
-// SameSite=None + Secure=true is required for cross-origin cookies (Vercel → Render)
+// Automatically detect if we are in a cross-origin production environment
+const isLocal = ENV.CLIENT_URL?.includes("localhost");
+
 export const cookieOptions = {
   httpOnly: true,
-  sameSite: ENV.NODE_ENV !== "development" ? "none" : "lax",
-  secure: ENV.NODE_ENV !== "development",
+  sameSite: !isLocal ? "none" : "lax",
+  secure: !isLocal,
 };
 
 export const generateToken = (userId, res) => {
