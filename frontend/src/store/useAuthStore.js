@@ -25,7 +25,9 @@ export const useAuthStore = create((set, get) => ({
             set({ authUser: res.data })
             get().connectSocket()
         } catch (error) {
-            console.log("Error in auth check")
+            if (error.response?.status !== 401) {
+                console.log("Error in auth check:", error)
+            }
             set({ authUser: null })
         } finally {
             set({ isCheckingAuth: false })
@@ -55,7 +57,7 @@ export const useAuthStore = create((set, get) => ({
             toast.success("Login successfully!");
             get().connectSocket()
         } catch (error) {
-            toast.error(error.response.data.message);
+            toast.error(error.response?.data?.message || "Something went wrong");
         } finally {
             set({ isLoggingInUp: false })
         }
