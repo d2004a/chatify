@@ -18,34 +18,45 @@ const io = new Server(server, {
   transports: ['websocket', 'polling']
 });
 
-//apply authentication middleware to all socket connections
-
+// apply authentication middleware to all socket connections
 io.use(socketAuthMiddleware);
 
-// we will use this function to check if a user is online or not by checking if the userId is present in the userSocketMap or not
-export function getReceiverSocketId(userId){
-    return userSocketMap[userId]
+// userSocketMap stores an array of socketIds per userId to support multi-tab usage
+// e.g. { "userId123": ["socketId1", "socketId2"] }
+const userSocketMap = {};
+
+export function getReceiverSocketIds(userId) {
+    return userSocketMap[userId] || [];
 }
 
-// this is for storing online users 
-const userSocketMap = {}; //{userId : SocketId}
+io.on("connection", (socket) => {
+    console.log("A user connected", socket.user.fullName);
 
-io.on("connection",(socket) =>{
-    console.log("A user connected ",socket.user.fullName);
+    const userId = socket.userId;
 
-    const userId = socket.userId
-    userSocketMap[userId] = socket.id 
+    // Add this socket to the user's socket list
+    if (!userSocketMap[userId]) {
+        userSocketMap[userId] = [];
+    }
+    userSocketMap[userId].push(socket.id);
 
-    //io.emit is used to send events to all connected clients 
+    // Emit the updated list of online users (unique user IDs)
     io.emit("getOnlineUsers", Object.keys(userSocketMap));
 
-    socket.on("disconnect", () =>{
-        console.log("A user disconnected",socket.user.fullName);
-        delete userSocketMap[userId]
+    socket.on("disconnect", () => {
+        console.log("A user disconnected", socket.user.fullName);
+
+        // Remove this specific socket from the user's list
+        if (userSocketMap[userId]) {
+            userSocketMap[userId] = userSocketMap[userId].filter(id => id !== socket.id);
+            // If the user has no more sockets, remove their entry entirely
+            if (userSocketMap[userId].length === 0) {
+                delete userSocketMap[userId];
+            }
+        }
+
         io.emit("getOnlineUsers", Object.keys(userSocketMap));
-
     });
-
 });
 
-export {io, app , server};
+export {io, app, server};

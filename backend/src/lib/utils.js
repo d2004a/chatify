@@ -7,11 +7,17 @@ export const generateToken = (userId, res) => {
     expiresIn: "7d",
   });
 
-  res.cookie("jwt", token, {
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-    httpOnly: true,
-    sameSite: "none",
-    secure: true,
+  // res.cookie("jwt", token, {
+  //   maxAge: 7 * 24 * 60 * 60 * 1000,
+  //   httpOnly: true,
+  //   sameSite: "none",
+  //   secure: true,
+  // });
+   res.cookie("jwt", token, {
+    maxAge: 7 * 24 * 60 * 60 * 1000, // MS
+    httpOnly: true, // prevent XSS attacks
+    sameSite: ENV.NODE_ENV === "development" ? "lax" : "none", // "none" needed for cross-origin (Vercel → Render)
+    secure: ENV.NODE_ENV !== "development", // must be true when sameSite is "none"
   });
 
   return token;

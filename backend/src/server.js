@@ -45,7 +45,9 @@ app.use("/api/messages",messageRoutes)
 // }
 
 
-server.listen(PORT, ()=>{
-    console.log("server is running on port " + PORT);
-    connectDB()
-})
+// Connect to DB first, then start server
+connectDB().then(() => {
+    server.listen(PORT, () => {
+        console.log("server is running on port " + PORT);
+    });
+});

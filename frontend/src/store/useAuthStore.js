@@ -1,8 +1,7 @@
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios"
 import toast from "react-hot-toast";
-import { data } from "react-router";
-import { connect } from "node:quic";
+
 import { io } from "socket.io-client";
 
 
@@ -41,7 +40,8 @@ export const useAuthStore = create((set, get) => ({
             toast.success("Account created successfully!");
             get().connectSocket()
         } catch (error) {
-            toast.error(error.response.data.message);
+            toast.error(error.response?.data?.message || "Something went wrong");
+            console.log("Signup error", error)
         } finally {
             set({ isSigningUp: false })
         }
@@ -105,6 +105,6 @@ export const useAuthStore = create((set, get) => ({
     },
 
     disconnectSocket: () => {
-        if (get().socket.connected) get().socket.disconnect();
+        if (get().socket?.connected) get().socket.disconnect();
     }
 }));

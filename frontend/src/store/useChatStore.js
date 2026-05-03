@@ -81,14 +81,16 @@ export const useChatStore = create((set,get)=>({
             isOptimistic : true,
         }
         // update UI optimistically
-        set({message : [...messages, optimisticMessage]})
+        set({messages : [...messages, optimisticMessage]})
 
         try {
             const res = await axiosInstance.post(`/messages/send/${selectedUser._id}`,messageData)
-            set({messages :messages.concat(res.data)})
+            // Replace optimistic message with the real server-confirmed message
+            set({messages: get().messages.filter(m => m._id !== tempId).concat(res.data)})
 
         } catch (error) {
-            set({message :messages})
+            // Remove the failed optimistic message
+            set({messages: get().messages.filter(m => m._id !== tempId)})
             toast.error(error.response?.data?.message || "Something went wrong")
         }
     },

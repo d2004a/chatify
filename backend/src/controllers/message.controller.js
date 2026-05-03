@@ -1,5 +1,5 @@
 import cloudinary from "../lib/cloudinary.js";
-import { getReceiverSocketId, io } from "../lib/socket.js";
+import { getReceiverSocketIds, io } from "../lib/socket.js";
 import Message from "../model/Message.js";
 import User from "../model/User.js";
 
@@ -43,7 +43,7 @@ export const sendMessage = async (req, res) => {
         if (!text && !image) {
             return res.status(400).json({ message: "Text or image is required." });
         }
-        if (senderId.equals(receiverId)) {
+        if (senderId.toString() === receiverId.toString()) {
             return res.status(400).json({ message: "Cannot send messages to yourself." });
         }
         const receiverExists = await User.exists({ _id: receiverId });
@@ -71,10 +71,11 @@ export const sendMessage = async (req, res) => {
 
         // todo : send message in real time if user is online --- using socket.io
 
-        const receiverSocketId = getReceiverSocketId(receiverId)
-        if (receiverSocketId) {
-            io.to(receiverSocketId).emit("newMessage",newMessage)
-        }
+        // Send real-time message to all of the receiver's connected sockets (multi-tab support)
+        const receiverSocketIds = getReceiverSocketIds(receiverId);
+        receiverSocketIds.forEach(socketId => {
+            io.to(socketId).emit("newMessage", newMessage);
+        });
 
         res.status(201).json(newMessage)
     } catch (error) {
