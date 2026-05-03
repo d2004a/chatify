@@ -15,10 +15,15 @@ export const generateToken = (userId, res) => {
     expiresIn: "7d",
   });
 
-  res.cookie("jwt", token, {
-    ...cookieOptions,
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in ms
-  });
+  const options = { ...cookieOptions };
+  
+  // In local development, keep the user logged in for 7 days.
+  // In production, make it a session cookie so it clears when the browser is closed.
+  if (isLocal) {
+    options.maxAge = 7 * 24 * 60 * 60 * 1000;
+  }
+
+  res.cookie("jwt", token, options);
 
   return token;
 };
